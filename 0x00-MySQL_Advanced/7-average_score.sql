@@ -1,22 +1,23 @@
--- Drop the procedure if it already exists
+-- Creates a stored procedure ComputeAverageScoreForUser that
+-- computes and stores the average score for a student.
 DROP PROCEDURE IF EXISTS ComputeAverageScoreForUser;
-
-DELIMITER //
-
--- Create the procedure ComputeAverageScoreForUser
-CREATE PROCEDURE ComputeAverageScoreForUser(IN user_id INT)
+DELIMITER $$
+CREATE PROCEDURE ComputeAverageScoreForUser (user_id INT)
 BEGIN
-    DECLARE avg_score FLOAT;
+    DECLARE total_score INT DEFAULT 0;
+    DECLARE projects_count INT DEFAULT 0;
 
-    -- Calculate the average score for the specified user
-    SELECT AVG(score) INTO avg_score
-    FROM corrections
-    WHERE user_id = user_id;
+    SELECT SUM(score)
+        INTO total_score
+        FROM corrections
+        WHERE corrections.user_id = user_id;
+    SELECT COUNT(*)
+        INTO projects_count
+        FROM corrections
+        WHERE corrections.user_id = user_id;
 
-    -- Update the user's average_score in the users table
     UPDATE users
-    SET average_score = avg_score
-    WHERE id = user_id;
-END //
-
+        SET users.average_score = IF(projects_count = 0, 0, total_score / projects_count)
+        WHERE users.id = user_id;
+END $$
 DELIMITER ;
