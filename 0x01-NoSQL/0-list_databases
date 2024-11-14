@@ -1,0 +1,13 @@
+// MongoDB script to list all databases
+// Connect to MongoDB and list all databases
+
+// Check if the connection is established
+if (db) {
+  const databases = db.adminCommand({ listDatabases: 1 }).databases;
+  databases.forEach((database) => {
+    print(`Database: ${database.name}`);
+  });
+} else {
+  print("Error: Unable to connect to MongoDB.");
+}
+
