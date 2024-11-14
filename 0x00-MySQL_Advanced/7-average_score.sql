@@ -7,8 +7,8 @@ CREATE PROCEDURE ComputeAverageScoreForUser(
 BEGIN
     DECLARE avg_score FLOAT DEFAULT 0;
 
-    -- Calculate the average score for the given user_id, handling NULL for single or no entries
-    SELECT IFNULL(AVG(score), 0) INTO avg_score
+    -- Calculate the average score for the given user_id
+    SELECT COALESCE(AVG(score), 0) INTO avg_score
     FROM corrections
     WHERE user_id = user_id;
 
