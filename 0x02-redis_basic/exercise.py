@@ -59,6 +59,16 @@ def replay(method: Callable):
 
 
 class Cache:
+    """
+    A class to interact with a Redis database for caching data.
+
+    Methods:
+        __init__: Initializes the Redis connection and flushes the database.
+        store: Stores data in Redis with a randomly generated key.
+        get: Retrieves data from Redis and optionally converts it.
+        get_str: Retrieves a string from Redis.
+        get_int: Retrieves an integer from Redis.
+    """
     def __init__(self):
         """Initialize the Cache class."""
         self._redis = redis.Redis()
