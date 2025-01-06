@@ -39,6 +39,25 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(method: Callable):
+    """Display the history of calls of a particular function."""
+    redis_instance = method.__self__._redis
+    method_name = method.__qualname__
+
+    inputs_key = f"{method_name}:inputs"
+    outputs_key = f"{method_name}:outputs"
+
+    inputs = redis_instance.lrange(inputs_key, 0, -1)
+    outputs = redis_instance.lrange(outputs_key, 0, -1)
+
+    call_count = len(inputs)
+    print(f"{method_name} was called {call_count} times:")
+
+    for input_args, output in zip(inputs, outputs):
+        print(f"{method_name}(*{input_args.decode('utf-8')}) -> "
+              f"{output.decode('utf-8')}")
+
+
 class Cache:
     def __init__(self):
         """Initialize the Cache class."""
@@ -88,8 +107,8 @@ class Cache:
             key (str): The key to retrieve.
 
         Returns:
-            Optional[str]: The retrieved string or None
-            if the key does not exist.
+            Optional[str]: The retrieved string or None if the
+            key does not exist.
         """
         return self.get(key, fn=lambda d: d.decode("utf-8"))
 
