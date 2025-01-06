@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+   This module defines the functions: track_access
+   and get_page
+"""
 import redis
 import requests
 from typing import Callable
