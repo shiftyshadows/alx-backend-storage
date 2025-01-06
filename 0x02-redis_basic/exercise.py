@@ -119,7 +119,8 @@ class Cache:
             fn (Optional[Callable]): A function to convert the data.
 
         Returns:
-            Union[str, bytes, int, None]: The retrieved data, possibly converted.
+            Union[str, bytes, int, None]: The retrieved data,
+            possibly converted.
         """
         data = self._redis.get(key)
         if data is None:
@@ -134,7 +135,8 @@ class Cache:
             key (str): The key to retrieve.
 
         Returns:
-            Optional[str]: The retrieved string or None if the key does not exist.
+            Optional[str]: The retrieved string or None if
+            the key does not exist.
         """
         return self.get(key, fn=lambda d: d.decode("utf-8"))
 
@@ -146,6 +148,7 @@ class Cache:
             key (str): The key to retrieve.
 
         Returns:
-            Optional[int]: The retrieved integer or None if the key does not exist.
+            Optional[int]: The retrieved integer or None if
+            the key does not exist.
         """
         return self.get(key, fn=int)
