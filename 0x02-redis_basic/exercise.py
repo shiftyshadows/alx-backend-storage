@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-"""
-   This module defines the class: Cache.
-"""
 import redis
 import uuid
 from typing import Union, Callable, Optional
@@ -9,7 +6,15 @@ from functools import wraps
 
 
 def count_calls(method: Callable) -> Callable:
-    """Decorator to count calls to a method using Redis."""
+    """
+    Decorator to count calls to a method using Redis.
+
+    Args:
+        method (Callable): The method to be decorated.
+
+    Returns:
+        Callable: The decorated method.
+    """
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         key = f"{method.__qualname__}"
@@ -20,8 +25,13 @@ def count_calls(method: Callable) -> Callable:
 
 def call_history(method: Callable) -> Callable:
     """
-       Decorator to store history of inputs and outputs
-       of a method in Redis.
+    Decorator to store history of inputs and outputs of a method in Redis.
+
+    Args:
+        method (Callable): The method to be decorated.
+
+    Returns:
+        Callable: The decorated method.
     """
     @wraps(method)
     def wrapper(self, *args, **kwargs):
@@ -40,7 +50,15 @@ def call_history(method: Callable) -> Callable:
 
 
 def replay(method: Callable):
-    """Display the history of calls of a particular function."""
+    """
+    Display the history of calls of a particular function.
+
+    Args:
+        method (Callable): The method to replay.
+
+    Prints:
+        The call history of the method.
+    """
     redis_instance = method.__self__._redis
     method_name = method.__qualname__
 
@@ -101,8 +119,7 @@ class Cache:
             fn (Optional[Callable]): A function to convert the data.
 
         Returns:
-            Union[str, bytes, int, None]: The retrieved data,
-            possibly converted.
+            Union[str, bytes, int, None]: The retrieved data, possibly converted.
         """
         data = self._redis.get(key)
         if data is None:
@@ -117,8 +134,7 @@ class Cache:
             key (str): The key to retrieve.
 
         Returns:
-            Optional[str]: The retrieved string or None if the
-            key does not exist.
+            Optional[str]: The retrieved string or None if the key does not exist.
         """
         return self.get(key, fn=lambda d: d.decode("utf-8"))
 
@@ -130,7 +146,6 @@ class Cache:
             key (str): The key to retrieve.
 
         Returns:
-            Optional[int]: The retrieved integer or None if
-            the key does not exist.
+            Optional[int]: The retrieved integer or None if the key does not exist.
         """
         return self.get(key, fn=int)
